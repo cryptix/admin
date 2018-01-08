@@ -29,29 +29,14 @@ func (admin Admin) GetMenus(roles []string) []*Menu {
 func (admin *Admin) AddMenu(roles []string, menu *Menu) *Menu {
 	menu.router = admin.router
 
-	names := append(menu.Ancestors, menu.Name)
-	if old := admin.GetMenu(names...); old != nil {
-		if len(names) > 1 || len(old.Ancestors) == 0 {
-			old.Link = menu.Link
-			old.RelativePath = menu.RelativePath
-			old.Priority = menu.Priority
-			old.Permissioner = menu.Permissioner
-			old.Permission = menu.Permission
-			old.RelativePath = menu.RelativePath
-			*menu = *old
-			return old
-		}
-	}
-
 	for _, role := range roles {
-		menu.router = admin.router
 		admin.menus[role] = appendMenu(admin.menus[role], menu.Ancestors, menu)
 	}
 	return menu
 }
 
 // GetMenu get sidebar menu with name
-func (admin Admin) GetMenu(role, name ...string) *Menu {
+func (admin Admin) GetMenu(role string, name ...string) *Menu {
 	m, ok := admin.menus[role]
 	if !ok {
 		return nil
