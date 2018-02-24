@@ -1,7 +1,7 @@
 module "github.com/qor/admin"
 
 require (
-	"github.com/asaskevich/govalidator" v1
+	"github.com/asaskevich/govalidator" v0.0.0-20180115112450-4b3d68f87f176641ffc147420296013aff66ea32
 	"github.com/cryptix/go" v1.1.0
 	"github.com/go-kit/kit" v0.6.0
 	"github.com/go-logfmt/logfmt" v0.3.0
