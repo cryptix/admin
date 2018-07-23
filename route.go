@@ -1,14 +1,12 @@
 package admin
 
 import (
-	"log"
 	"net/http"
 	"net/url"
 	"path"
 	"regexp"
 	"sort"
 	"strings"
-	"time"
 
 	"github.com/qor/qor"
 	"github.com/qor/qor/utils"
@@ -212,13 +210,6 @@ func (serveMux *serveMux) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		(&Controller{Admin: admin}).Asset(context)
 		return
 	}
-
-	defer func() func() {
-		begin := time.Now()
-		return func() {
-			log.Printf("Finish [%s] %s Took %.2fms\n", req.Method, req.RequestURI, time.Now().Sub(begin).Seconds()*1000)
-		}
-	}()()
 
 	// Set Current User
 	var currentUser qor.CurrentUser

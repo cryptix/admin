@@ -13,11 +13,9 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
-	"runtime/debug"
 	"sort"
 	"strings"
 
-	"github.com/cryptix/go/logging"
 	"github.com/jinzhu/gorm"
 	"github.com/jinzhu/inflection"
 	"github.com/qor/qor"
@@ -534,15 +532,6 @@ func (context *Context) renderFilter(filter *Filter) template.HTML {
 		result  = bytes.NewBufferString("")
 	)
 
-	defer func() {
-		if r := recover(); r != nil {
-			// TODO: use improved recover/panic logger
-			l := logging.FromContext(context.Request.Context())
-			l.Log("event", "recover", "func", "renderFilter", "r", r, "stack", debug.Stack())
-			fmt.Fprintf(result, "Get error when render template for filter %v (%v): %v", filter.Name, filter.Type, r)
-		}
-	}()
-
 	if content, err = context.Asset(fmt.Sprintf("metas/filter/%v.tmpl", filter.Type)); err == nil {
 		tmpl := template.New(filter.Type + ".tmpl").Funcs(context.FuncMap())
 		if tmpl, err = tmpl.Parse(string(content)); err == nil {
@@ -608,14 +597,6 @@ func (context *Context) renderMeta(meta *Meta, value interface{}, prefix []strin
 		return context.hasUpdatePermission(permissioner)
 	}
 	funcsMap["render_nested_form"] = generateNestedRenderSections("form")
-
-	defer func() {
-		if r := recover(); r != nil {
-			l := logging.FromContext(context.Request.Context())
-			l.Log("event", "recover", "func", "renderMeta", "r", r, "stack", debug.Stack())
-			writer.WriteString(fmt.Sprintf("Get error when render template for meta %v (%v): %v", meta.Name, meta.Type, r))
-		}
-	}()
 
 	var (
 		tmpl    = template.New(meta.Type + ".tmpl").Funcs(funcsMap)
