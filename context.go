@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/pkg/errors"
 	"github.com/qor/qor"
 	"github.com/qor/qor/utils"
 	"github.com/qor/roles"
@@ -225,7 +226,7 @@ func (context *Context) Execute(name string, result interface{}) {
 	context.Result = result
 	context.Content = context.Render(name, result)
 	if err := tmpl.Execute(context.Writer, context); err != nil {
-		utils.ExitWithMsg(err)
+		utils.ExitWithMsg(errors.Wrapf(err, "qor/context: failed to render %s - url: %s", name, context.Request.URL.String()))
 	}
 }
 
